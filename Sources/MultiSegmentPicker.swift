@@ -14,6 +14,9 @@ import SwiftUI
     public typealias UIViewType = MultiSelectSegmentedControl
     private let uiView: MultiSelectSegmentedControl
 
+    var onChangedAction: (() -> Void)?
+
+
     @Binding var selectedSegmentIndexes: IndexSet
 
     public init(
@@ -24,7 +27,8 @@ import SwiftUI
         borderRadius: CGFloat? = nil,
         isVertical: Bool? = nil,
         isVerticalSegmentContents: Bool? = nil,
-        selectedBackgroundColor: UIColor? = nil
+        selectedBackgroundColor: UIColor? = nil,
+        onChanged: (() -> Void)? = nil
     ) {
         _selectedSegmentIndexes = selectedSegmentIndexes
         uiView = MultiSelectSegmentedControl(items: items)
@@ -36,6 +40,7 @@ import SwiftUI
         uiView.isVertical =? isVertical
         uiView.isVerticalSegmentContents =? isVerticalSegmentContents
         uiView.selectedBackgroundColor =? selectedBackgroundColor
+        onChangedAction = onChanged
     }
 
     public func makeUIView(context: UIViewRepresentableContext<MultiSegmentPicker>) -> MultiSelectSegmentedControl {
@@ -60,6 +65,7 @@ import SwiftUI
 
         @objc func valueChanged(_ sender: MultiSelectSegmentedControl) {
             parent.selectedSegmentIndexes = sender.selectedSegmentIndexes
+            parent.onChangedAction?()
         }
     }
 }
@@ -114,6 +120,8 @@ import SwiftUI
         uiView.setTitleTextAttributes(attributes, for: state)
         return self
     }
+
+
 }
 
 #endif
